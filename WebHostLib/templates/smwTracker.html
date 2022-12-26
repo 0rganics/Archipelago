@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ player_name }}&apos;s Tracker</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/smwTracker.css') }}"/>
+    <script type="application/ecmascript" src="{{ url_for('static', filename='assets/smwTracker.js') }}"></script>
+    <link href="https://fonts.cdnfonts.com/css/super-mario-world-text-box" rel="stylesheet">
+</head>
+
+<body>
+    <div id="player-tracker-wrapper" data-tracker="{{ room.tracker|suuid }}">
+        <table id="inventory-table">
+            <tr>
+                <td colspan="2"><img src="{{ icons['Run'] }}" class="{{ 'acquired' if 'Run' in acquired_items }}" title="Run" /></td>
+                <td colspan="2"><img src="{{ icons['Carry'] }}" class="{{ 'acquired' if 'Carry' in acquired_items }}" title="Carry" /></td>
+                <td colspan="2"><img src="{{ icons['Swim'] }}" class="{{ 'acquired' if 'Swim' in acquired_items }}" title="Swim" /></td>
+            </tr>
+            <tr>
+                <td colspan="2"><img src="{{ icons['Spin Jump'] }}" class="{{ 'acquired' if 'Spin Jump' in acquired_items }}" title="Spin Jump" /></td>
+                <td colspan="2"><img src="{{ icons['Climb'] }}" class="{{ 'acquired' if 'Climb' in acquired_items }}" title="Climb" /></td>
+                <td colspan="2"><img src="{{ icons['Yoshi'] }}" class="{{ 'acquired' if 'Yoshi' in acquired_items }}" title="Yoshi Activate" /></td>
+            </tr>
+            <tr>
+                <td colspan="2"><img src="{{ icons['P-Switch'] }}" class="{{ 'acquired' if 'P-Switch' in acquired_items }}" title="P-Switch" /></td>
+                <td colspan="2"><img src="{{ icons['P-Balloon'] }}" class="{{ 'acquired' if 'P-Balloon' in acquired_items }}" title="P-Balloon" /></td>
+                <td colspan="2"><img src="{{ icons['Super Star'] }}" class="{{ 'acquired' if 'Super Star Activate' in acquired_items }}" title="Super Star Activate" /></td>
+            </tr>
+            <tr>
+                <td><img src="{{ icons['Yellow Switch Palace'] if 'Yellow Switch Palace' in acquired_items else icons['Yellow Switch Palace Inactive'] }}" class="smallimg acquired" title="Yellow Switch Palace" /></td>
+                <td><img src="{{ icons['Green Switch Palace'] if 'Green Switch Palace' in acquired_items else icons['Green Switch Palace Inactive'] }}" class="smallimg acquired" title="Green Switch Palace" /></td>
+                <td><img src="{{ icons['Red Switch Palace'] if 'Red Switch Palace' in acquired_items else icons['Red Switch Palace Inactive'] }}" class="smallimg acquired" title="Red Switch Palace" /></td>
+                <td><img src="{{ icons['Blue Switch Palace'] if 'Blue Switch Palace' in acquired_items else icons['Blue Switch Palace Inactive'] }}" class="smallimg acquired" title="Blue Switch Palace" /></td>
+                <td>&nbsp;</td>
+                <td><img src="{{ powerup_icon }}" class="smallimg{{ ' acquired' if powerup_level > 0 }}" title="Progressive Powerup" /></td>
+            </tr>
+            <tr>
+                <td><img src="{{ icons['Yoshi Egg'] }}" class="smallimg{{ ' acquired' if 'Yoshi Egg' in acquired_items }}" title="Yoshi Eggs" /></td>
+                <td><div class="item-count"> x{{ yoshi_count }}</div></td>
+                <td><img src="{{ icons['Boss Token'] }}" class="smallimg{{ ' acquired' if 'Boss Token' in acquired_items }}" title="Boss Tokens" /></td>
+                <td><div class="item-count"> x{{ koopaling_count }}</div></td>
+                <td><img src="{{ icons['1-Up Mushroom'] }}" class="smallimg{{ ' acquired' if '1-Up Mushroom' in acquired_items }}" title="1-Up Mushrooms" /></td>
+                <td><div class="item-count"> x{{ oneup_count }}</div></td>
+            </tr>
+        </table>
+        <table id="location-table">
+            {% for area in checks_in_area %}
+            {% if checks_in_area[area] > 0 %}
+            <tr class="location-category" id="{{area}}-header">
+                <td>{{ area }} {{'▼' if area != 'Total'}}</td>
+                <td class="counter">{{ checks_done[area] }} / {{ checks_in_area[area] }}</td>
+            </tr>
+            <tbody class="locations hide" id="{{area}}">
+                {% for location in location_info[area] %}
+                <tr>
+                    <td class="location-name">{{ location }}</td>
+                    <td class="counter">{{ '✔' if location_info[area][location] else '' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,110 @@
+#player-tracker-wrapper{
+    margin: 0;
+}
+
+#inventory-table{
+    border-top: 2px solid #000000;
+    border-left: 2px solid #000000;
+    border-right: 2px solid #000000;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 3px 3px 10px;
+    width: 418px;
+    background-color: #42b149;
+}
+
+#inventory-table td{
+    width: 64px;
+    height: 96px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#inventory-table td.title{
+    padding-top: 16px;
+    padding-bottom: 8px;
+    height: 20px;
+    font-family: "Super Mario World Text Box", monospace;
+    font-size: 18px;
+}
+
+#inventory-table img{
+    width: auto;
+    height: 100%;
+    max-width: 96px;
+    max-height: 96px;
+    image-rendering: pixelated;
+    filter: grayscale(100%) contrast(75%) brightness(20%);
+}
+
+#inventory-table img.acquired{
+    filter: none;
+}
+
+#inventory-table img.smallimg{
+    max-width: 64px;
+    max-height: 64px;
+}
+
+#inventory-table div.counted-item {
+    position: relative;
+}
+
+#inventory-table div.item-count {
+    text-align: left;
+    color: black;
+    font-family: "Super Mario World Text Box", monospace;
+    font-weight: 400;
+}
+
+#location-table{
+    width: 418px;
+    border-left: 2px solid #000000;
+    border-right: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    background-color: #42b149;
+    padding: 10px 3px 3px;
+    font-family: "Super Mario World Text Box", monospace;
+    font-size: 16px;
+    cursor: default;
+}
+
+#location-table th{
+    vertical-align: middle;
+    text-align: left;
+    padding-right: 10px;
+}
+
+#location-table td{
+    padding-top: 2px;
+    padding-bottom: 2px;
+    line-height: 20px;
+}
+
+#location-table td.counter {
+    text-align: right;
+    font-size: 14px;
+}
+
+#location-table td.toggle-arrow {
+    text-align: right;
+}
+
+#location-table tr#Total-header {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#location-table tbody.locations {
+    font-size: 16px;
+}
+
+#location-table td.location-name {
+    padding-left: 16px;
+}
+
+.hide {
+    display: none;
+}

@@ -1190,6 +1190,103 @@ def __renderSC2WoLTracker(multisave: Dict[str, Any], room: Room, locations: Dict
                             checks_done=checks_done, checks_in_area=checks_in_area, location_info=location_info,
                             **display_data)
 
+def __renderSuperMarioWorldTracker(multisave: Dict[str, Any], room: Room, locations: Dict[int, Dict[int, Tuple[int, int, int]]],
+                          inventory: Counter, team: int, player: int, playerName: str,
+                          seed_checks_in_area: Dict[int, Dict[str, int]], checks_done: Dict[str, int],
+                          slot_data: Dict, saving_second: int) -> str:
+
+    icons = {
+        "1-Up Mushroom": "https://mario.wiki.gallery/images/e/e7/SMW_1-up.png",
+        "Yoshi Egg": "https://mario.wiki.gallery/images/d/d0/SMW_YoshiEgg_Green.png",
+        "Boss Token": "https://mario.wiki.gallery/images/a/a2/Grey_Bowser_Statue.png",
+
+        "Run": "https://0rganics.org/archipelago/smw/Run.png",
+        "Carry": "https://0rganics.org/archipelago/smw/Carry.png",
+        "Swim": "https://0rganics.org/archipelago/smw/Swim.png",
+        "Spin Jump": "https://0rganics.org/archipelago/smw/Spin.png",
+        "Climb": "https://0rganics.org/archipelago/smw/Climb.png",
+        "Yoshi": "https://0rganics.org/archipelago/smw/Yoshi.png",
+        "P-Switch": "https://0rganics.org/archipelago/smw/PSwitch.png",
+        "P-Balloon": "https://0rganics.org/archipelago/smw/PBalloon.png",
+        "Super Star": "https://0rganics.org/archipelago/smw/Star.png",
+
+        "Yellow Switch Palace Inactive": "https://mario.wiki.gallery/images/5/54/SMW_Yellow_Dotted_Line_Block.png",
+        "Yellow Switch Palace": "https://mario.wiki.gallery/images/1/14/SMW_Yellow_Exclamation_Mark_Block.png",
+        "Green Switch Palace Inactive": "https://mario.wiki.gallery/images/1/10/DottedLineBlock.png",
+        "Green Switch Palace": "https://mario.wiki.gallery/images/9/9d/SMW_Green_Exclamation_Mark_Block.png",
+        "Red Switch Palace Inactive": "https://mario.wiki.gallery/images/2/22/SMW_Red_Dotted_Line_Block.png",
+        "Red Switch Palace": "https://mario.wiki.gallery/images/7/73/SMW_Red_Exclamation_Mark_Block.png",
+        "Blue Switch Palace Inactive": "https://mario.wiki.gallery/images/9/90/SMW_Blue_Dotted_Line_Block.png",
+        "Blue Switch Palace": "https://mario.wiki.gallery/images/6/60/SMW_Blue_Exclamation_Mark_Block.png",
+
+        "Ice Trap": "https://mario.wiki.gallery/images/e/e7/SMWSMA2IceBlock.png",
+        "Stun Trap": "",
+        "Literature Trap": "https://mario.wiki.gallery/images/8/81/SMW_Messblock.png",
+
+        "Nothing": "",
+    }
+
+    progressive_icons = [
+        "https://mario.wiki.gallery/images/a/a3/MushroomSMW.png",
+        "https://mario.wiki.gallery/images/a/a3/MushroomSMW.png",
+        "https://mario.wiki.gallery/images/4/4d/FlowerSMW.png",
+        "https://mario.wiki.gallery/images/3/33/Feather.png"
+    ]
+
+    smw_location_ids = {
+        "Yoshi's Island": [0xBC0201, 0xBC0000, 0xBC0100, 0xBC0001, 0xBC0101, 0xBC0002, 0xBC0102, 0xBC0003, 0xBC0103, 0xBC0004, 0xBC00A0],
+        "Donut Plains": [0xBC0006, 0xBC0007, 0xBC0106, 0xBC0008, 0xBC0009, 0xBC0108, 0xBC000A, 0xBC010A, 0xBC000B, 0xBC010B, 0xBC000C, 0xBC000D, 0xBC010C, 0xBC0063, 0xBC010D, 0xBC000E, 0xBC000F, 0xBC0010, 0xBC0011, 0xBC0012, 0xBC00A1],
+        "Vanilla Dome": [0xBC0014, 0xBC0015, 0xBC0114, 0xBC0016, 0xBC0017, 0xBC0116, 0xBC0018, 0xBC0118, 0xBC0019, 0xBC0119, 0xBC001A, 0xBC001B, 0xBC011A, 0xBC001C, 0xBC011C, 0xBC001D, 0xBC011D, 0xBC001E, 0xBC011E, 0xBC0020, 0xBC00B0, 0xBC0021, 0xBC00A2],
+        "Twin Bridges": [0xBC0023, 0xBC0123, 0xBC0024, 0xBC0124, 0xBC0025, 0xBC0026, 0xBC0125, 0xBC0027, 0xBC0127, 0xBC0028, 0xBC0128, 0xBC0029, 0xBC00A3],
+        "Forest of Illusion": [0xBC002A, 0xBC002B, 0xBC002C, 0xBC002D, 0xBC012C, 0xBC002E, 0xBC002F, 0xBC012E, 0xBC0030, 0xBC0031, 0xBC0130, 0xBC0032, 0xBC0033, 0xBC0132, 0xBC0034, 0xBC0134, 0xBC0035, 0xBC00B1, 0xBC0036, 0xBC00A4, 0xBC0136],
+        "Chocolate Island": [0xBC0038, 0xBC0138, 0xBC0039, 0xBC003A, 0xBC0139, 0xBC003B, 0xBC003C, 0xBC013B, 0xBC003D, 0xBC013D, 0xBC003E, 0xBC013E, 0xBC003F, 0xBC0041, 0xBC0042, 0xBC00B2, 0xBC0043, 0xBC00A5, 0xBC0044, 0xBC0144],
+        "Valley of Bowser": [0xBC0045, 0xBC0145, 0xBC0046, 0xBC0047, 0xBC0146, 0xBC0048, 0xBC0148, 0xBC0049, 0xBC004A, 0xBC0149, 0xBC004B, 0xBC004C, 0xBC014B, 0xBC004E, 0xBC00B3, 0xBC004F, 0xBC00A6, 0xBC014F, 0xBC0200],
+        "Switch Palaces": [0xBC0005, 0xBC0013, 0xBC0022, 0xBC0037],
+        "Star Road": [0xBC0051, 0xBC0052, 0xBC0151, 0xBC0053, 0xBC0054, 0xBC0055, 0xBC0056, 0xBC0057, 0xBC0058, 0xBC0059, 0xBC005A],
+        "Special Zone": [0xBC005B, 0xBC015B, 0xBC005C, 0xBC015C, 0xBC005D, 0xBC015D, 0xBC005E, 0xBC015E, 0xBC005F, 0xBC015F, 0xBC0060, 0xBC0160, 0xBC0061, 0xBC0161, 0xBC0062, 0xBC0162]
+    }
+
+    display_data = {}
+
+    # Progressive Powerup
+    display_data["powerup_level"] = min(inventory[0xBC000A], 3)
+    display_data["powerup_icon"] = progressive_icons[display_data["powerup_level"]]
+
+    # Multi-items
+    multi_items = {
+        "OneUp Mushroom": 0xBC0001,
+        "Yoshi Egg": 0xBC0002,
+        "Koopaling": 0xBC0012,
+        #"Ice Trap": 0xBC0013,
+        #"Stun Trap": 0xBC0014,
+        #"Literature Trap": 0xBC0015
+    }
+    for item_name, item_id in multi_items.items():
+        base_name = item_name.split()[0].lower()
+        count = inventory[item_id]
+        display_data[base_name + "_count"] = int(count)
+
+    # Victory condition
+    game_state = multisave.get("client_game_state", {}).get((team, player), 0)
+    display_data['game_finished'] = game_state == 30
+
+    # Turn location IDs into objective counts
+    checked_locations = multisave.get("location_checks", {}).get((team, player), set())
+    lookup_name = lambda id: lookup_any_location_id_to_name[id]
+    location_info = {area_name: {lookup_name(id): (id in checked_locations) for id in area_locations if id in set(locations[player])} for area_name, area_locations in smw_location_ids.items()}
+    checks_done = {area_name: len([id for id in area_locations if id in checked_locations and id in set(locations[player])]) for area_name, area_locations in smw_location_ids.items()}
+    checks_done['Total'] = len(checked_locations)
+    checks_in_area = {area_name: len([id for id in area_locations if id in set(locations[player])]) for area_name, area_locations in smw_location_ids.items()}
+    checks_in_area['Total'] = sum(checks_in_area.values())
+
+    return render_template("smwTracker.html",
+                            inventory=inventory, icons=icons,
+                            acquired_items={lookup_any_item_id_to_name[id] for id in inventory if
+                                            id in lookup_any_item_id_to_name},
+                            player=player, team=team, room=room, player_name=playerName,
+                            checks_done=checks_done, checks_in_area=checks_in_area, location_info=location_info,
+                            **display_data)
+
 
 def __renderGenericTracker(multisave: Dict[str, Any], room: Room, locations: Dict[int, Dict[int, Tuple[int, int, int]]],
                            inventory: Counter, team: int, player: int, playerName: str,
@@ -1315,6 +1412,7 @@ game_specific_trackers: typing.Dict[str, typing.Callable] = {
     "Ocarina of Time": __renderOoTTracker,
     "Timespinner": __renderTimespinnerTracker,
     "A Link to the Past": __renderAlttpTracker,
+    "Super Mario World": __renderSuperMarioWorldTracker,
     "Super Metroid": __renderSuperMetroidTracker,
     "Starcraft 2 Wings of Liberty": __renderSC2WoLTracker
 }
